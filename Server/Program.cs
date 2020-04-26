@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Greet;
 using Grpc.Core;
 
 namespace Server
@@ -18,6 +19,7 @@ namespace Server
             {
                 server = new Grpc.Core.Server()
                 {
+                    Services = {GreetingService.BindService(new GreetingServiceImpl())},
                     Ports = {new ServerPort("localhost", port, ServerCredentials.Insecure) }
                 };
                 server.Start();
