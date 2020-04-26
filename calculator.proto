@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package calc;
+
+message CalcRequest
+{
+	int32 a = 1;
+	int32 b = 2;
+}
+
+message CalcResponse
+{
+	int32 sum = 1;
+}
+
+service CalcService{
+	rpc Calculate(CalcRequest) returns (CalcResponse) {}
+}
