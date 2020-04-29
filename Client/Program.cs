@@ -34,16 +34,30 @@ namespace Client
             //var request = new GreetingRequest() { Greeting = greeting };
             //var response = client.Greet(request);
 
-            var request = new GreetManyTimesRequest() { Greeting = greeting };
-            var response = client.GreetManyTimes(request);
+            //var request = new GreetManyTimesRequest() { Greeting = greeting };
+            //var response = client.GreetManyTimes(request);
 
             //Console.WriteLine(response.Result);
 
-            while(await response.ResponseStream.MoveNext())
+            //while(await response.ResponseStream.MoveNext())
+            //{
+            //    Console.WriteLine(response.ResponseStream.Current.Result);
+            //    await Task.Delay(200); 
+            //}
+
+            var request = new LongGreetRequest() { Greeting = greeting };
+            var stream = client.LongGreet();
+
+            foreach(int i in Enumerable.Range(1,10))
             {
-                Console.WriteLine(response.ResponseStream.Current.Result);
-                await Task.Delay(200);
+                await stream.RequestStream.WriteAsync(request);
             }
+
+            await stream.RequestStream.CompleteAsync();
+
+            var response = await stream.ResponseAsync;
+
+            Console.WriteLine(response.Result);
 
             //var client = new CalcService.CalcServiceClient(channel);
             //var request = new CalcRequest() { A = 10, B = 3 };
