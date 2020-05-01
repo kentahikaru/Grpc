@@ -31,6 +31,10 @@ namespace Client
                 FirstName = "Lada",
                 LastName = "Hruska"
             };
+
+
+
+
             //var request = new GreetingRequest() { Greeting = greeting };
             //var response = client.Greet(request);
 
@@ -45,19 +49,51 @@ namespace Client
             //    await Task.Delay(200); 
             //}
 
-            var request = new LongGreetRequest() { Greeting = greeting };
-            var stream = client.LongGreet();
 
-            foreach(int i in Enumerable.Range(1,10))
+
+
+            //var request = new LongGreetRequest() { Greeting = greeting };
+            //var stream = client.LongGreet();
+
+            //foreach(int i in Enumerable.Range(1,10))
+            //{
+            //    await stream.RequestStream.WriteAsync(request);
+            //}
+
+            //await stream.RequestStream.CompleteAsync();
+
+            //var response = await stream.ResponseAsync;
+
+            //Console.WriteLine(response.Result);
+
+
+
+
+            var stream = client.GreetEveryone();
+            var responseReaderTask = Task.Run(async () => { 
+                while(await stream.ResponseStream.MoveNext())
+                {
+                    Console.WriteLine("Received: " + stream.ResponseStream.Current.Result);
+                }
+            });
+
+            Greeting[] greetings =
             {
-                await stream.RequestStream.WriteAsync(request);
+                new Greeting() { FirstName = "John", LastName = "Doh"},
+                new Greeting() { FirstName = "Hikaru" , LastName = "Kenta"},
+                new Greeting() { FirstName = "Sayaka", LastName = "Mori"}
+            };
+
+            foreach(var oneGreeting in greetings)
+            {
+                Console.WriteLine("Sending : " + oneGreeting.ToString());
+                await stream.RequestStream.WriteAsync(new GreetEveryoneRequest() { Greeting = oneGreeting });
+                await Task.Delay(2000);
             }
 
             await stream.RequestStream.CompleteAsync();
+            await responseReaderTask;
 
-            var response = await stream.ResponseAsync;
-
-            Console.WriteLine(response.Result);
 
             //var client = new CalcService.CalcServiceClient(channel);
             //var request = new CalcRequest() { A = 10, B = 3 };
