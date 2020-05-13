@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Greet;
 using Calc;
+using Sqrt;
 
 namespace Client
 {
@@ -24,13 +25,15 @@ namespace Client
             });
 
             //var client = new DummyService.DummyServiceClient(channel);
-            var client = new GreetingService.GreetingServiceClient(channel);
+            //var client = new GreetingService.GreetingServiceClient(channel);
+            var client = new SqrtService.SqrtServiceClient(channel);
 
-            var greeting = new Greeting()
-            {
-                FirstName = "Lada",
-                LastName = "Hruska"
-            };
+
+            //var greeting = new Greeting()
+            //{
+            //    FirstName = "Lada",
+            //    LastName = "Hruska"
+            //};
 
 
 
@@ -69,30 +72,46 @@ namespace Client
 
 
 
-            var stream = client.GreetEveryone();
-            var responseReaderTask = Task.Run(async () => { 
-                while(await stream.ResponseStream.MoveNext())
-                {
-                    Console.WriteLine("Received: " + stream.ResponseStream.Current.Result);
-                }
-            });
+            //var stream = client.GreetEveryone();
+            //var responseReaderTask = Task.Run(async () => { 
+            //    while(await stream.ResponseStream.MoveNext())
+            //    {
+            //        Console.WriteLine("Received: " + stream.ResponseStream.Current.Result);
+            //    }
+            //});
 
-            Greeting[] greetings =
-            {
-                new Greeting() { FirstName = "John", LastName = "Doh"},
-                new Greeting() { FirstName = "Hikaru" , LastName = "Kenta"},
-                new Greeting() { FirstName = "Sayaka", LastName = "Mori"}
-            };
+            //Greeting[] greetings =
+            //{
+            //    new Greeting() { FirstName = "John", LastName = "Doh"},
+            //    new Greeting() { FirstName = "Hikaru" , LastName = "Kenta"},
+            //    new Greeting() { FirstName = "Sayaka", LastName = "Mori"}
+            //};
 
-            foreach(var oneGreeting in greetings)
+            //foreach(var oneGreeting in greetings)
+            //{
+            //    Console.WriteLine("Sending : " + oneGreeting.ToString());
+            //    await stream.RequestStream.WriteAsync(new GreetEveryoneRequest() { Greeting = oneGreeting });
+            //    await Task.Delay(2000);
+            //}
+
+            //await stream.RequestStream.CompleteAsync();
+            //await responseReaderTask;
+
+
+
+            //int number = 16;
+            int number = -1;
+            try
             {
-                Console.WriteLine("Sending : " + oneGreeting.ToString());
-                await stream.RequestStream.WriteAsync(new GreetEveryoneRequest() { Greeting = oneGreeting });
-                await Task.Delay(2000);
+                var response = client.sqrt(new SqrtRequest() {Number = number });
+                Console.WriteLine(response.SquareRoot);
+            }
+            catch(RpcException ex)
+            {
+                Console.WriteLine("Error : " + ex.Status.Detail);
             }
 
-            await stream.RequestStream.CompleteAsync();
-            await responseReaderTask;
+
 
 
             //var client = new CalcService.CalcServiceClient(channel);
