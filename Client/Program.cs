@@ -25,15 +25,15 @@ namespace Client
             });
 
             //var client = new DummyService.DummyServiceClient(channel);
-            //var client = new GreetingService.GreetingServiceClient(channel);
-            var client = new SqrtService.SqrtServiceClient(channel);
+            var client = new GreetingService.GreetingServiceClient(channel);
+            //var client = new SqrtService.SqrtServiceClient(channel);
 
 
-            //var greeting = new Greeting()
-            //{
-            //    FirstName = "Lada",
-            //    LastName = "Hruska"
-            //};
+            var greeting = new Greeting()
+            {
+                FirstName = "Lada",
+                LastName = "Hruska"
+            };
 
 
 
@@ -100,15 +100,35 @@ namespace Client
 
 
             //int number = 16;
-            int number = -1;
+            //int number = -1;
+            //try
+            //{
+            //    var response = client.sqrt(new SqrtRequest() { Number = number });
+            //    Console.WriteLine(response.SquareRoot);
+            //}
+            //catch (RpcException ex)
+            //{
+            //    Console.WriteLine("Error : " + ex.Status.Detail);
+            //}
+
+
+
+
             try
             {
-                var response = client.sqrt(new SqrtRequest() {Number = number });
-                Console.WriteLine(response.SquareRoot);
+                //var request = new GreetingRequest() { Greeting = greeting };
+                //var response = client.Greet(request);
+                var response = client.GreetWithDeadline(new GreetingRequest() { Greeting = greeting }, deadline: DateTime.UtcNow.AddMilliseconds(100));
+                Console.WriteLine(response.Result);
             }
-            catch(RpcException ex)
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
             {
-                Console.WriteLine("Error : " + ex.Status.Detail);
+                Console.WriteLine("Error: " + ex.Status.Detail);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
 
 

@@ -21,8 +21,8 @@ namespace Server
             {
                 server = new Grpc.Core.Server()
                 {
-                    Services = {SqrtService.BindService(new SqrtServiceImpl())},
-                    //Services = {GreetingService.BindService(new GreetingServiceImpl())},
+                    //Services = {SqrtService.BindService(new SqrtServiceImpl())},
+                    Services = {GreetingService.BindService(new GreetingServiceImpl())},
                     //Services = {CalcService.BindService(new CalculatorServiceImpl())},
                     Ports = {new ServerPort("localhost", port, ServerCredentials.Insecure) }
                 };
